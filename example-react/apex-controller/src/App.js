@@ -1,10 +1,14 @@
 import React, { useState } from 'react';
 import LCC from 'lightning-container';
+import Debug from 'debug';
 import logo from './logo.svg';
 import './App.css';
 
+const debug = Debug('*');
+
 function App() {
   const [ name, setName ] = useState('');
+  const [ loading, setLoading ] = useState(false);
   const [ account, setAccount ] = useState({
     id: '',
     phone: '',
@@ -13,19 +17,23 @@ function App() {
   });
 
   const handleAccountQueryResponse = (result, event) => {
+    debug('info', result, event);
     if (event.status) {
       setAccount({
-        id: result.id,
-        phone: result.phone,
-        type: result.type,
-        numberOfEmployees: result.numberOfEmployees
+        id: result.Id,
+        phone: result.Phone,
+        type: result.Type,
+        numberOfEmployees: result.NumberOfEmployees
       });
     } else if (event.type === "exception") {
-      console.error(`${event.message}:${event.where}`);
+      debug('error', `${event.message}:${event.where}`);
     }
+    setLoading(false);
   };
 
   const callApex = () => {
+    debug('info', 'callApex, name:', name);
+    setLoading(true);
     LCC.callApex('ApexControllerDemo.getAccount', name, handleAccountQueryResponse, {
       escape: true
     });
@@ -47,7 +55,7 @@ function App() {
           <label htmlFor="accountName">Account Name: </label>
           <div className="form-item-main">
             <input type="text" id="accountName" value={account.name} onChange={handleAccountNameChange}/>
-            <button type="submit" onClick={callApex}>Call Apex Controller</button>
+            <button type="button" onClick={callApex} className={loading ? 'loading' : ''}>Call Apex Controller</button>
           </div>
         </div>
         <div className="form-item">

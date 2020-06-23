@@ -65,6 +65,12 @@
   text-align: center;
   vertical-align: middle;
   outline: none;
+  cursor: pointer;
+}
+
+.form-item-main button.loading {
+  color: #999;
+  background: linear-gradient(rgb(245, 249, 255), rgb(222, 235, 255), );
 }
 
 @keyframes App-logo-spin {

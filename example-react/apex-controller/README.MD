@@ -6,6 +6,7 @@
 
  - 将一个最简单的`react-app`导入到`salesforce`里。
  - 众所周知，`react-app`最终会 `build`成一个`html`并链接`js`、`css`等资源。而lcc就是把这个html以`iframe`的方式嵌入到他的视图里。
+ - 点击按钮，会触发apexController查询并将返回的内容通过`React`显示。
 
 #### 构建步骤
 
@@ -30,7 +31,7 @@ yarn
 切换到`build`目录，执行:
 
 ```bash
-zip -r ExampleUsageBasicUsage.zip * -x ".*" -x "__MACOSX"
+zip -r ApexControllerDemo.zip * -x ".*" -x "__MACOSX"
 ```
 
 ###### 第四步：上传压缩包
@@ -39,46 +40,15 @@ zip -r ExampleUsageBasicUsage.zip * -x ".*" -x "__MACOSX"
 
  1. 登录你的salesforce org，并进入Setup界面（右上角齿轮图标弹出菜单）。
  2. 右侧菜单找到【Custom Code】→【Static Resources】，进入。
- 3. 【New】新建Static Resource，也就是将刚才打包的zip上传，注意资源的name为`ExampleUsageBasicUsage`。
+ 3. 【New】新建Static Resource，也就是将刚才打包的zip上传，注意资源的name为`ApexControllerDemo`。
 
-###### 第五步：创建 Custom Lightning Component
+###### 第五步：创建 Custom Lightning Component 和 ApexClass
 
-**第一种方式：使用Developer Console**
+创建 Lightning Component见上一个简单一些的示例。
 
-`Developer Console`打开方式：页面左上角齿轮图标→【Developer Console】
+创建 Apex Class 和 创建 LC相似，同样可以通过`Developer Console`和`SFDX`两种。
 
-这种方法方便调试salesforce app。
-
- 1. 新建`Custom Lightning Component`。
- 2. 将`./metadata/aura/Basic`目录下的文件拷贝到`Developer Console`内的对应文件。
-
-**第二种方式：使用SFDX方式**
-
-这种方式适合本地使用IDE开发，例如VSCode。
-
-`SFDX`安装和配置，链接到ORG，略。
-`SFDX`在没有`Dev Hub`的情况下创建临时`ORG`，略。
-
-创建一个lwc:
-
-````bash
-sfdx force:lightning:component:create --componentname ExampleUsageBasicUsage --outputdir metadata/aura
-````
-
-同步代码:
-
-```bash
-#拉取代码
-
-sfdx force:source:pull
-
-#推送代码
-
-sfdx force:source:push
-
-```
-
-...
+源码见目录`metadata/classes`，复制粘贴即可。
 
 ###### 第六步：创建 FlexPage
 
@@ -104,11 +74,11 @@ sfdx force:source:push
 
 ```xml
 <aura:component access="global" implements="flexipage:availableForAllPageTypes" >
-    <lightning:container src="{!$Resource.ExampleUsageBasicUsage + '/index.html'}"/>
+    <lightning:container src="{!$Resource.ApexControllerDemo + '/index.html'}"/>
 </aura:component>
 ```
 
-它用到了`lightning:container`这个组件，而`$Resource.ExampleUsageBasicUsage`即指向了你上传的那个Static Resource（名称要对上）。
+它用到了`lightning:container`这个组件，而`$Resource.ApexControllerDemo`即指向了你上传的那个Static Resource（名称要对上）。
 
 **React组件，HTML资源引入jscssimg的路径问题**
 
